@@ -22,10 +22,12 @@ header : {
     "jwt" : "Authorization: Bearer <le_token>"  
 }  
 
+<img width="500" alt="Diagramme UML utilisateurs" src="https://github.com/user-attachments/assets/70162f89-ee6f-462a-9f73-8d3f750922bb" />
+
 * Utiliser un secret JWT dans les variables d’environnement  
 
 * Durée d’expiration du token configurable :  
-Choix de 2 heures  
+Choix de 2 heures
 
 ## Un peu plus en détail : Informations sur les utilisateurs
 
