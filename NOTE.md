@@ -14,7 +14,6 @@ POST /register body {
 reponse : 201 Created : Le compte a été créé avec succès
 
 ## Implémenter la route POST /login : authentification et génération d’un JWT : 
-
 POST /login body {
     "email": "morgane@gmail.com",
     "pwd": "H4iWy"
@@ -31,7 +30,6 @@ Choix de 2 heures
 # Un peu plus en détail : Informations sur les utilisateurs
 
 ## GET /whois/<pseudo> : informations publiques (status, canaux, rôles)
-
 GET /whois/<pseudo> 
 reponse : 200 OK 
 header : {
@@ -41,12 +39,11 @@ body : {
     "roles": ["admin"],
     "canaux": [" "] // appel groupe propriétaire 
 }
-## GET /seen/<pseudo> : dernière activité horodatée
 
-GET /seen/<pseudo> att
+## GET /seen/<pseudo> : dernière activité horodatée
+GET /seen/<pseudo> attente du groupe 2
 
 ## GET /ison?users=roger,ginette : utilisateurs actuellement connectés
-
 GET /ison?users=nom1,nom2
 reponse body : {
     nom1: true,
@@ -89,6 +86,7 @@ header : {
 body : {
     roles: [role1, role2] 
 }
+
 ## POST /user/roles/<pseudo> : ajoute un rôle à un utilisateur (admin uniquement)
 header : {
     Authorization: Bearer <le_token> // /!\ admin uniquement 
