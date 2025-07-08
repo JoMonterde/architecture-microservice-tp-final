@@ -1,6 +1,4 @@
 # Architecture micro-service : TP FINAL - IRC
-#### auteurs: Romain COURBAIZE, Jodie MONTERDE, Alberto MOUNGONDO, Morgane MICHEL
-
 
 ## Premiers points : Gestion des comptes
 
@@ -45,7 +43,7 @@ body : {
 * GET /seen/<pseudo> : dernière activité horodatée  
 GET /seen/<pseudo> attente du groupe 2  
 
-* GET /ison?users=roger,ginette : utilisateurs actuellement connectés  
+* GET /ison?users=nom1,nom2 : utilisateurs actuellement connectés  
 GET /ison?users=nom1,nom2  
 reponse body : {  
     nom1: true,  
