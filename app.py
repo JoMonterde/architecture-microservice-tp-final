@@ -90,10 +90,16 @@ def register():
     email = data.get("email")
     password = data.get("password")
     if not pseudo or not email or not password:
-        return jsonify({"error": "pseudo et/ou email et/ou password manquant(s)"}), 400
+        return jsonify({
+            "status": "ko",
+            "reponse": "Erreur : pseudo et/ou email et/ou password manquant(s)"
+        }), 400
     
     if User.query.filter((User.pseudo == pseudo) | (User.email == email)).first():
-        return jsonify({'error': 'User already exists'}), 409
+        return jsonify({
+            "status": "ko",
+            "reponse": f"Erreur : l'adresse e-mail {email} ou le pseudo {pseudo} est déjà utilisé."
+        }), 409
 
     new_user = User(
         pseudo=pseudo,
@@ -103,7 +109,10 @@ def register():
 
     db.session.add(new_user)
     db.session.commit()
-    return jsonify({"message": "Compte créé"}), 201
+    return jsonify({
+        "status": "ok",
+        "reponse": "Compte créé"
+    }), 201
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -171,7 +180,12 @@ def login():
         return jsonify({'error': 'Pseudo et/ou mot de passe invalide(s)'}), 401
 
     token = generate_jwt(user)
-    return jsonify({'token': token}), 200
+    return jsonify({
+        "status": "ok",
+        "reponse": {
+            "token": token
+        }
+    }), 200
 
 @app.route("/protected")
 def protected():
