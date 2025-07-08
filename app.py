@@ -2,7 +2,7 @@ import jwt
 import datetime
 from flask import Flask, request, jsonify
 from user import db, User
-from auth import hash_password, generate_jwt
+from auth import hash_password, generate_jwt, verify_password
 from config import Config
 from flasgger import Swagger
 
@@ -90,16 +90,10 @@ def register():
     email = data.get("email")
     password = data.get("password")
     if not pseudo or not email or not password:
-        return jsonify({
-            "status": "ko",
-            "reponse": "Erreur : pseudo et/ou email et/ou password manquant(s)"
-        }), 400
+        return jsonify({"error": "pseudo et/ou email et/ou password manquant(s)"}), 400
     
     if User.query.filter((User.pseudo == pseudo) | (User.email == email)).first():
-        return jsonify({
-            "status": "ko",
-            "reponse": f"Erreur : l'adresse e-mail {email} ou le pseudo {pseudo} est déjà utilisé."
-        }), 409
+        return jsonify({'error': 'User already exists'}), 409
 
     new_user = User(
         pseudo=pseudo,
@@ -109,14 +103,11 @@ def register():
 
     db.session.add(new_user)
     db.session.commit()
-    return jsonify({
-        "status": "ok",
-        "reponse": "Compte créé"
-    }), 201
+    return jsonify({"message": "Compte créé"}), 201
 
 @app.route('/login', methods=['POST'])
 def login():
-    """
+"""
     Connexion utilisateur
     ---
     post:
@@ -172,14 +163,34 @@ def login():
                     example: Erreur : email et/ou mot de passe invalide(s)
     """
     data = request.get_json()
-    email = data.get('email')
+    pseudo = data.get('pseudo')
     password = data.get('password')
 
-    user = User.query.filter_by(pseudo=pseudo).first()
-    if not user or not hash_password(password) == user.password_hash:
-        return jsonify({'error': 'Pseudo et/ou mot de passe invalide(s)'}), 401
+    if not pseudo or not password:
+        return jsonify({
+            "status": "ko",
+            "reponse": "Pseudo et mot de passe requis"
+        }), 400
 
+    user = User.query.filter_by(pseudo=pseudo).first()
+
+    if not user or not verify_password(password, user.password_hash):
+        return jsonify({
+            "status": "ko",
+            "reponse": "Pseudo et/ou mot de passe invalide(s)"
+        }), 401
+
+    # Génération du token
     token = generate_jwt(user)
+    expiration_time = datetime.datetime.utcnow() + datetime.timedelta(seconds=Config.JWT_EXPIRATION_SECONDS)
+
+    # Stocker le token et son expiration dans la base
+    user.current_token = token
+    user.token_expiration = expiration_time
+    user.last_seen = datetime.datetime.utcnow()
+
+    db.session.commit()
+
     return jsonify({
         "status": "ok",
         "reponse": {
@@ -187,20 +198,72 @@ def login():
         }
     }), 200
 
+@app.route("/whois/<pseudo>", methods=["GET"])
+def whois(pseudo):
+    user = User.query.filter_by(pseudo=pseudo).first()
+    if not user:
+        return jsonify({
+            "status": "ko",
+            "reponse": "Utilisateur introuvable"
+        }), 404
+    return jsonify({
+        "status": "ok",
+        "reponse": user.to_public_dict()
+    }), 200
+
+
+@app.route("/ison", methods=["GET"])
+def ison():
+    users_param = request.args.get("users")
+    if not users_param:
+        return jsonify({
+            "status": "ko",
+            "reponse": "Paramètre 'users' manquant"
+        }), 400
+
+    online = []
+    # Format attendu : "pseudo1:token1,pseudo2:token2"
+    user_tokens = users_param.split(",")
+    for ut in user_tokens:
+        try:
+            pseudo, token = ut.split(":")
+        except ValueError:
+            continue
+
+        try:
+            payload = jwt.decode(token, Config.JWT_SECRET_KEY, algorithms=["HS256"])
+            if payload.get("pseudo") == pseudo:
+                online.append(pseudo)
+        except jwt.ExpiredSignatureError:
+            continue
+        except jwt.InvalidTokenError:
+            continue
+
+    return jsonify({
+        "status": "ok",
+        "reponse": {
+            "online_users": online
+        }
+    }), 200
+
+
 @app.route("/protected")
 def protected():
     auth = request.headers.get("Authorization", "")
     if not auth.startswith("Bearer "):
         return jsonify({"error": "Token manquant"}), 401
-
+    
     token = auth[7:]
     try:
         decoded = jwt.decode(token, Config.JWT_SECRET_KEY, algorithms=["HS256"])
-        return jsonify({"status": "ok", "user": decoded["user"]})
+        return jsonify({"status": "ok", "user": decoded["pseudo"]})
     except jwt.ExpiredSignatureError:
         return jsonify({"error": "Token expiré"}), 401
     except jwt.InvalidTokenError:
         return jsonify({"error": "Token invalide"}), 401
 
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+
