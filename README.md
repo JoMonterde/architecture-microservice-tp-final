@@ -11,13 +11,20 @@ TODO
 TODO
 
 ## 📦 Contenu du dépôt
-### Main 
+### Documentation  
 - `README.md` : Ce fichier
 - `authors.md` : URL du dépôt et les membres du groupe 
 - `group.md` : Rôle de chaque membre et déroulé du projet
+- `DocumentationAPI.md` : Documentation de l'API avec toutes les routes (en parallèle avec Flasgger TODO)
+### Code
 - `Pipfile` : Déclaration des dépendances
 - `Pipfile.lock` : Geler les versions exactes
 - `requirements.txt` : Lister les dépendances Python
 - `Dockerfile` : Image Docker du service
 - `docker-compose.yml` : Orchestration multi-conteneurs
+- `app.py` : Fichier serveur avec toutes les routes
+- `user.py` : Fichier client
+- `auth.py` : Configuration du JWT et du hashage 
+- `config.py` : Struture du JWT 
+
 
