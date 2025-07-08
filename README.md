@@ -1,23 +1,23 @@
-# Architecture micro-service : TP FINAL - IRC
+# Architecture micro-service - TP FINAL IRC - Groupe 1 : user-service 
 #### auteurs: Romain COURBAIZE, Jodie MONTERDE, Alberto MOUNGONDO, Morgane MICHEL
 
-## 📌 Organisation & Planification
-#### Répartition des rôles dans l’équipe
-* Responsable documentation : Jodie et Morgane
-* Developpeur principal Python : Alberto et Romain
-* Responsable tests : ?
+## 🎯 Objectif du projet 
+Le User-Service est un micro-service central chargé de l’authentification et de la gestion des utilisateurs dans l’architecture IRC distribuée. Il gère les comptes utilisateurs, les statuts de connexion, les avatars, et les rôles globaux. Il est responsable de l’émission et de la vérification des jetons JWT, garantissant des accès sécurisés aux autres services. Entièrement stateless et dockerisé, il expose des endpoints HTTP en JSON, avec stockage en mémoire ou via MySQL selon l’avancement.
 
-## 🧾 Gestion des Données JSON
+## 🚀 Instruction de lancement 
+TODO
 
-Objectifs de départ est de travailler d'abord sur la structure des données JSON.  
+## Exemple d'appel
+TODO
 
-## 🤝 Échanges avec les autres Groupes : 
-
-* Groupe 3 : --
-
-* Groupe 2 : Demande d'une requête pour obtenir le dernier message horodaté d’un utilisateur. Cette route devra être masquée, car elle ne doit pas être accessible publiquement.
-
-## 📄 Documentation des API
-
-Création d’un document partagé accessible à l’ensemble des groupes regroupant : les différentes routes API, les détails des requêtes attendues, ainsi que la clé JWT nécessaire à l’authentification. 
+## 📦 Contenu du dépôt
+### Main 
+- `README.md` : Ce fichier
+- `authors.md` : URL du dépôt et les membres du groupe 
+- `group.md` : Rôle de chaque membre et déroulé du projet
+- `Pipfile` : Déclaration des dépendances
+- `Pipfile.lock` : Geler les versions exactes
+- `requirements.txt` : Lister les dépendances Python
+- `Dockerfile` : Image Docker du service
+- `docker-compose.yml` : Orchestration multi-conteneurs
 
