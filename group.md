@@ -60,7 +60,6 @@ Réponse : Le JWT contient les informations. Explication de l’extraction des d
 #### 13h30 : Dernière ligne droite 
 - /login est fonctionnel : Authentifier et retourner un JWT
 - /ison est fonctionnel : Liste des utilisateurs actuellement connectés
-#### 14h30
 - Lastseen est fonctionnel
 - Création de Flasgger
 #### 16h00 : Enfin fini
