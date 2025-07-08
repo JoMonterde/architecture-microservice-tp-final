@@ -93,7 +93,8 @@ def register():
         return jsonify({"error": "pseudo et/ou email et/ou password manquant(s)"}), 400
     
     if User.query.filter((User.pseudo == pseudo) | (User.email == email)).first():
-        return jsonify({'error': 'User already exists'}), 409
+        return jsonify({"status": "ko", "reponse": f"Erreur : l'adresse e-mail {email} est déjà utilisée."}), 409
+
 
     new_user = User(
         pseudo=pseudo,
@@ -103,11 +104,12 @@ def register():
 
     db.session.add(new_user)
     db.session.commit()
-    return jsonify({"message": "Compte créé"}), 201
+    return jsonify({"status": "ok", "reponse": "Compte créé"}), 201
+
 
 @app.route('/login', methods=['POST'])
 def login():
-"""
+    """
     Connexion utilisateur
     ---
     post:
@@ -120,7 +122,7 @@ def login():
             schema:
               type: object
               required:
-                - email
+                - pseudo
                 - password
               properties:
                 email:
@@ -200,6 +202,53 @@ def login():
 
 @app.route("/whois/<pseudo>", methods=["GET"])
 def whois(pseudo):
+    """
+    Informations publiques d’un utilisateur
+    ---
+    get:
+      summary: Récupérer les informations publiques d’un utilisateur
+      description: Permet de récupérer les informations publiques d’un utilisateur à partir de son pseudo.
+      parameters:
+        - name: pseudo
+          in: path
+          required: true
+          schema:
+            type: string
+          example: Morgane
+      responses:
+        200:
+          description: Utilisateur trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  reponse:
+                    type: object
+                    properties:
+                      pseudo:
+                        type: string
+                        example: Morgane
+                      email:
+                        type: string
+                        example: morgane@gmail.com
+        404:
+          description: Utilisateur introuvable
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ko
+                  reponse:
+                    type: string
+                    example: Utilisateur introuvable
+    """
     user = User.query.filter_by(pseudo=pseudo).first()
     if not user:
         return jsonify({
@@ -214,6 +263,52 @@ def whois(pseudo):
 
 @app.route("/ison", methods=["GET"])
 def ison():
+    """
+    Vérifier si des utilisateurs sont en ligne
+    ---
+    get:
+      summary: Vérifie l'état de connexion de plusieurs utilisateurs
+      description: À partir d’une liste de paires pseudo:token, retourne les pseudos des utilisateurs actuellement connectés.
+      parameters:
+        - name: users
+          in: query
+          required: true
+          schema:
+            type: string
+          example: Morgane:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9,Julien:eyJhbGciOiJIUz...
+      responses:
+        200:
+          description: Liste des utilisateurs en ligne
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  reponse:
+                    type: object
+                    properties:
+                      online_users:
+                        type: array
+                        items:
+                          type: string
+                        example: ["Morgane"]
+        400:
+          description: Paramètre 'users' manquant
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ko
+                  reponse:
+                    type: string
+                    example: Paramètre 'users' manquant
+    """
     users_param = request.args.get("users")
     if not users_param:
         return jsonify({
@@ -249,6 +344,44 @@ def ison():
 
 @app.route("/protected")
 def protected():
+    """
+    Accès à une ressource protégée
+    ---
+    get:
+      summary: Vérifie l’accès à une ressource protégée par token JWT
+      description: Nécessite un token JWT valide dans le header Authorization pour accéder à la ressource.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+            example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+      responses:
+        200:
+          description: Accès autorisé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  user:
+                    type: string
+                    example: Morgane
+        401:
+          description: Token invalide ou expiré
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Token invalide
+    """
     auth = request.headers.get("Authorization", "")
     if not auth.startswith("Bearer "):
         return jsonify({"error": "Token manquant"}), 401
@@ -261,6 +394,74 @@ def protected():
         return jsonify({"error": "Token expiré"}), 401
     except jwt.InvalidTokenError:
         return jsonify({"error": "Token invalide"}), 401
+@app.route("/lastseen/<pseudo>", methods=["GET"])
+def last_seen(pseudo):
+    """
+    Dernière activité d’un utilisateur
+    ---
+    get:
+      summary: Obtenir la date et l’heure de la dernière connexion
+      description: Retourne la dernière date/heure à laquelle l’utilisateur s’est connecté avec succès (last_seen).
+      parameters:
+        - name: pseudo
+          in: path
+          required: true
+          schema:
+            type: string
+          example: Morgane
+      responses:
+        200:
+          description: Date de dernière connexion trouvée
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  reponse:
+                    type: object
+                    properties:
+                      last_seen:
+                        type: string
+                        format: date-time
+                        example: 2025-07-08T14:30:00Z
+        404:
+          description: Utilisateur introuvable
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ko
+                  reponse:
+                    type: string
+                    example: Utilisateur introuvable
+    """
+    user = User.query.filter_by(pseudo=pseudo).first()
+    if not user:
+        return jsonify({
+            "status": "ko",
+            "reponse": "Utilisateur introuvable"
+        }), 404
+    
+    if not user.last_seen:
+        return jsonify({
+            "status": "ok",
+            "reponse": {
+                "last_seen": "Jamais connecté"
+            }
+        }), 200
+
+    return jsonify({
+        "status": "ok",
+        "reponse": {
+            "last_seen": user.last_seen.isoformat() + "Z"
+        }
+    }), 200
 
 
 
