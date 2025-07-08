@@ -40,7 +40,15 @@ Réponse : Cette route devra être masquée, car elle ne doit pas être accessib
 #### 10h00 : Deadline !
 - Rendu au groupe 4 d'un conteneur fonctionnel
 #### 10h30 : Initiative de Romain 
-TODO 
+- Description de problèmes rencontrés
+  - Lorsque l'on change de mot de passe est changé, le token précédemment émis devrait être invalidé.
+  - La gestion des status aurait pu être gérée par le token (online/offline)
+- Solution trouvée : s'apparte à l'utilisation d'une session
+  - Stocker le token dans la base de données permettrait de pouvoir comparer le token envoyé par l'utilisateur et le dernier token émit par le serveur.
+  - Stocker le token dans la base de données permettrait de connaître l'état de connexion à l'instant T. Un token en base de données et valide (non expiré) indiquerait que l'utilisateur est connecté, sinon déconnecté.
+- Solution retenue
+  - Nous avons décidé de ne pas stocker le token en base de données. Nous avons par contre stocké la date de dernière émission en base de données ce qui nous permet de connaître le status.
+    Dans le cas d'un changement de mot de passe, il n'y aura pas de problème car le serveur pourra comparé l'ancienne date d'expiration avec celle en base. Dès le changement d'un mot de passe, la date sera mise à jour.  
 #### 11h00 : Demande du groupe 3 
 - Demande : Un moyen de récupérer le pseudo.  
 Réponse : Le JWT contient les informations. Explication de l’extraction des données dans la clé cryptée, et ajout les détails dans la documentation commune.
