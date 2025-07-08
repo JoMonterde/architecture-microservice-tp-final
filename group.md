@@ -30,9 +30,22 @@ Réponse : Cette route devra être masquée, car elle ne doit pas être accessib
 #### 17h00 : Fin de la journée
 
 #### Mardi 8 juillet 2025
-#### 8h30 Remise dans le bain 
+#### 8h30 : Remise dans le bain 
 - Relecture du sujet
-- Recadrage du code et de la documentation
-- Demande du groupe 4 : un conteneur viable pour commencer les tests
-#### 9h36 Youpiiii ça marche !
-- Register fonctionnel  
+- Reprise du code 
+- Recadrage de la documentation
+- Demande du groupe 4 pour 10h : un conteneur viable pour commencer les tests
+#### 9h36 : Youpiiii ça marche !
+- /register est fonctionnel : Créer un compte utilisateur
+#### 10h00 : Deadline !
+- Rendu au groupe 4 d'un conteneur fonctionnel
+#### 10h30 : Initiative de Romain 
+TODO 
+#### 11h00 : Demande du groupe 3 
+- Demande : Un moyen de récupérer le pseudo.  
+Réponse : Le JWT contient les informations. Explication de l’extraction des données dans la clé cryptée, et ajout les détails dans la documentation commune.
+#### 11h10 : Youpiiii ça marche !
+- /whois est fonctionnel : Infos publiques sur un utilisateur
+#### 11h30 : Tests
+- Listes des tests à faire
+#### 12h00 : Pause dej
