@@ -1,5 +1,5 @@
 # Architecture micro-service - TP FINAL IRC - Groupe 1 : user-service 
-- [ ] POST /register Créer un compte utilisateur  
+- [x] POST /register Créer un compte utilisateur  
 ✅ Cas de réussite : Création d’un compte avec un pseudo, email et mot de passe valides  
 Réponse : "status": "ok", "reponse": "Compte créé"  
 ❌ Cas d’erreur – Données manquantes : Email non renseigné / Pseudo non renseigné / Mot de passe non renseigné  
@@ -15,7 +15,7 @@ Réponse (409) :
   "reponse": "Erreur : l'adresse e-mail {email} ou le pseudo {pseudo} est déjà utilisé."
 }  
 
-- [ ] POST /login Authentifier et retourner un JWT  
+- [x] POST /login Authentifier et retourner un JWT  
 ✅ Cas de réussite : Authentification avec un pseudo et un mot de passe valides  
 Réponse (200) :  
 {  
@@ -62,22 +62,11 @@ Réponse attendue (409) :
   "status": "ko",  
   "reponse": "Erreur : l'adresse e-mail {email} ou le pseudo {pseudo} est déjà utilisé."  
 }  
-
 - [ ] GET /seen/<pseudo> Dernière activité horodatée
-- Cas fonctionnement Ok
 - [ ] GET /ison?users=roger,gineLtitsete des utilisateurs actuellement connectés
-- Cas fonctionnement Ok
 - [ ] PATCH /user/<pseudo>/passworCdhanger le mot de passe
-- Cas fonctionnement Ok
-- [ ] POST /user/status Changer le statut (online, away, etc.)
-- Cas fonctionnement Ok
 - [ ] GET /user/avatar/<pseudo> Récupérer l’avatar
-- Cas fonctionnement Ok
 - [ ] DELETE/user/<pseudo> Supprimer un utilisateur
-- Cas fonctionnement Ok
 - [ ] GET /user/roles/<pseudo> Récupérer les rôles globaux
-- Cas fonctionnement Ok
 - [ ] POST /user/roles/<pseudo> Ajouter un rôle global (admin only)
-- Cas focntionnement Ok
 - [ ] POST /make-admin/<pseudo> Donner le rôle admin (admin only,facultatif route)
-- Cas fonctionnement Ok
